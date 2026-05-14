@@ -1,0 +1,2 @@
+# CBPBrailleDisplayAddinForZDSR
+适用于争渡读屏的文星盲文显示器插件
