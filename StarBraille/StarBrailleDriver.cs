@@ -14,6 +14,15 @@ namespace StarBraille
         private const string starDriverDll = "StarLibDriver.dll";
 
         /// <summary>
+        /// 检查驱动 DLL 是否就位。
+        /// </summary>
+        /// <returns>如果已就位返回 true， 否则返回false。</returns>
+        public static bool DriverReady()
+        {
+            return Utilities.CanLoadDll(starDriverDll);
+        }
+
+        /// <summary>
         /// 打开连接到本机的文星盲文显示器。
         /// </summary>
         /// <returns>如果成功返回 1，否则返回 0。</returns>
