@@ -17,8 +17,10 @@ namespace StarBraille
         {
             const uint LOAD_LIBRARY_AS_DATAFILE = 0x00000002;
             const uint LOAD_LIBRARY_AS_IMAGE_RESOURCE = 0x00000020;
+            const int LOAD_LIBRARY_SEARCH_DLL_LOAD_DIR = 0x00000100;
+            const int LOAD_LIBRARY_SEARCH_DEFAULT_DIRS = 0x00001000;
 
-            IntPtr handle = LoadLibraryEx(dllName, IntPtr.Zero, LOAD_LIBRARY_AS_DATAFILE | LOAD_LIBRARY_AS_IMAGE_RESOURCE);
+            IntPtr handle = LoadLibraryEx(dllName, IntPtr.Zero, LOAD_LIBRARY_AS_DATAFILE | LOAD_LIBRARY_AS_IMAGE_RESOURCE | LOAD_LIBRARY_SEARCH_DLL_LOAD_DIR | LOAD_LIBRARY_SEARCH_DEFAULT_DIRS);
             if (handle != IntPtr.Zero)
             {
                 FreeLibrary(handle);
