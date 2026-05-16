@@ -10,12 +10,15 @@ namespace StarBraille
         private readonly Action<int, int> _setRowCellHandle;
         private readonly Action<string> _actionHandler;
         private readonly Action<int> _routingKeyHandler;
+        private readonly ButtonEventDetector _buttonDetector;
 
         public StarBrailleDisplay(Action<int, int> setHandle, Action<string> actionHandler, Action<int> routingKeyHandler)
         {
             _setRowCellHandle = setHandle;
             _actionHandler = actionHandler;
             _routingKeyHandler = routingKeyHandler;
+            _buttonDetector = new ButtonEventDetector(this.GetButtonId);
+            _buttonDetector.ButtonClick += Device_ButtonClick;
         }
 
         public bool Connect()
@@ -26,17 +29,55 @@ namespace StarBraille
             }
 
             _setRowCellHandle(ROW_COUNT, CELL_COUNT);
+            _buttonDetector.Start();
             return true;
         }
 
         public void Disconnect()
         {
+            _buttonDetector.Stop();
             StarBrailleDriver.CloseBrailleDisplay();
         }
 
         public void ShowBraille(byte[] cells)
         {
             StarBrailleDriver.ShowBraille(cells);
+        }
+
+        private void Device_ButtonClick(int buttonId)
+        {
+            if (buttonId > 0 && buttonId <= 40)
+            {
+                _routingKeyHandler(buttonId);
+            }
+
+            switch (buttonId)
+            {
+                case 41:
+                    _actionHandler("br_PreviousLine");
+                    break;
+                case 42:
+                    _actionHandler("br_PreviousScreen");
+                    break;
+                case 43:
+                    _actionHandler("kb_Tab");
+                    break;
+                case 44:
+                    _actionHandler("br_NextLine");
+                    break;
+                case 45:
+                    _actionHandler("br_NextScreen");
+                    break;
+                case 46:
+                    _actionHandler("kb_Return");
+                    break;
+            }
+        }
+
+        private int GetButtonId()
+        {
+            int id = StarBrailleDriver.GetBtn();
+            return id;
         }
     }
 }
