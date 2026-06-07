@@ -42,6 +42,7 @@
   <ItemGroup>
     <Compile Include="BrailleDisplayAddin.cs" />
     <Compile Include="ButtonEventDetector.cs" />
+    <Compile Include="DevicesUtilities.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StarBrailleDisplay.cs" />
     <Compile Include="StarBrailleDriver.cs" />
