@@ -34,11 +34,6 @@ namespace StarBraille
 
         public bool Initial(Action<int, int> setHandle, Action<string> actionHandler, Action<int> routingKeyHandler)
         {
-            if (!StarBrailleDriver.DriverReady())
-            {
-                return false;
-            }
-
             _BrailleDisplay = new StarBrailleDisplay(setHandle, actionHandler, routingKeyHandler);
             return true;
         }

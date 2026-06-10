@@ -12,6 +12,8 @@ namespace StarBraille
         private readonly Action<int> _routingKeyHandler;
         private readonly ButtonEventDetector _buttonDetector;
 
+        private StarBrailleDisplayDriver _brailleDriver;
+
         public StarBrailleDisplay(Action<int, int> setHandle, Action<string> actionHandler, Action<int> routingKeyHandler)
         {
             _setRowCellHandle = setHandle;
@@ -23,12 +25,15 @@ namespace StarBraille
 
         public bool Connect()
         {
-            if (StarBrailleDriver.OpenBrailleDisplay() != 1)
+            var driver = StarBrailleDisplayDriver.OpenAvailableDevice();
+
+            if (driver == null)
             {
                 return false;
             }
 
             _setRowCellHandle(ROW_COUNT, CELL_COUNT);
+            _brailleDriver = driver;
             _buttonDetector.Start();
             return true;
         }
@@ -36,12 +41,13 @@ namespace StarBraille
         public void Disconnect()
         {
             _buttonDetector.Stop();
-            StarBrailleDriver.CloseBrailleDisplay();
+            _brailleDriver.Dispose();
+            _brailleDriver = null;
         }
 
         public void ShowBraille(byte[] cells)
         {
-            StarBrailleDriver.ShowBraille(cells);
+            _brailleDriver.ShowBraille(cells);
         }
 
         private void Device_ButtonClick(int buttonId)
@@ -76,7 +82,7 @@ namespace StarBraille
 
         private int GetButtonId()
         {
-            int id = StarBrailleDriver.GetBtn();
+            int id = _brailleDriver.GetButton();
             return id;
         }
     }
