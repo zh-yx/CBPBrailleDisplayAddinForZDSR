@@ -5,6 +5,8 @@ namespace StarBraille
 {
     internal class StarBrailleDisplayDriver
     {
+        public const int GetButton_COMMUNICATION_FAILURE = -1;
+        public const int GetButton_NO_BUTTON = 255;
         private const byte ENDPOINT_OUT = 0x01;
         private const byte ENDPOINT_IN = 0x81;
         private const int PACKAGE_SIZE = 64;
@@ -26,6 +28,7 @@ namespace StarBraille
         private StarBrailleDisplayDriver(WinUsbDeviceConnection deviceConnection)
         {
             _deviceConnection = deviceConnection;
+            _queryButtonPackage[0] = COMMAND_QUERY_BUTTON;
         }
 
         public static StarBrailleDisplayDriver OpenAvailableDevice()
@@ -109,15 +112,21 @@ namespace StarBraille
 
             lock (_queryButtonBuffer)
             {
-                _queryButtonPackage[0] = COMMAND_QUERY_BUTTON;
-                _deviceConnection.WritePipe(_queryButtonPackage);
+                try
+                {
+                    _deviceConnection.WritePipe(_queryButtonPackage);
+                }
+                catch (Win32Exception)
+                {
+                    return GetButton_COMMUNICATION_FAILURE;
+                }
                 _deviceConnection.ReadPipe(_queryButtonBuffer);
                 if (_queryButtonBuffer[0] == COMMAND_QUERY_BUTTON)
                 {
                     return _queryButtonBuffer[1];
                 }
             }
-            return -1;
+            return GetButton_COMMUNICATION_FAILURE;
         }
 
         protected virtual void Dispose(bool disposing)
