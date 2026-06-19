@@ -79,7 +79,7 @@ namespace StarBraille
         }
 
 
-        public void ShowBraille(byte[] cells)
+        public bool ShowBraille(byte[] cells)
         {
             if (_disposed)
             {
@@ -100,8 +100,16 @@ namespace StarBraille
             {
                 _showBraillePackage[0] = COMMAND_SHOW_BRAILLE;
                 cells.CopyTo(_showBraillePackage, 1);
-                _deviceConnection.WritePipe(_showBraillePackage);
+                try
+                {
+                    _deviceConnection.WritePipe(_showBraillePackage);
+                }
+                catch (Win32Exception)
+                {
+                    return false;
+                }
             }
+            return true;
         }
 
         public int GetButton()
