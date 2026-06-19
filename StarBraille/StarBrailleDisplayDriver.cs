@@ -19,6 +19,7 @@ namespace StarBraille
         private bool _disposed;
         private WinUsbDeviceConnection _deviceConnection;
 
+        private readonly object _lockObj = new object();
         private readonly byte[] _showBraillePackage = new byte[PACKAGE_SIZE];
         private readonly byte[] _queryButtonPackage = new byte[PACKAGE_SIZE];
         private readonly byte[] _queryButtonBuffer = new byte[PACKAGE_SIZE];
@@ -95,7 +96,7 @@ namespace StarBraille
                 throw new ArgumentException(nameof(cells));
             }
 
-            lock (_showBraillePackage)
+            lock (_lockObj)
             {
                 _showBraillePackage[0] = COMMAND_SHOW_BRAILLE;
                 cells.CopyTo(_showBraillePackage, 1);
@@ -110,7 +111,7 @@ namespace StarBraille
                 throw new ObjectDisposedException(nameof(StarBrailleDisplayDriver));
             }
 
-            lock (_queryButtonBuffer)
+            lock (_lockObj)
             {
                 try
                 {
