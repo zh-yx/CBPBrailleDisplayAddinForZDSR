@@ -41,13 +41,13 @@ namespace StarBraille
         public void Disconnect()
         {
             _buttonDetector.Stop();
-            _brailleDriver.Dispose();
+            _brailleDriver?.Dispose();
             _brailleDriver = null;
         }
 
         public void ShowBraille(byte[] cells)
         {
-            _brailleDriver.ShowBraille(cells);
+            _brailleDriver?.ShowBraille(cells);
         }
 
         private void Device_ButtonClick(int buttonId)
@@ -82,6 +82,7 @@ namespace StarBraille
 
         private int GetButtonId()
         {
+            if (_brailleDriver == null) return StarBrailleDisplayDriver.GetButton_COMMUNICATION_FAILURE;
             int id = _brailleDriver.GetButton();
             return id;
         }
