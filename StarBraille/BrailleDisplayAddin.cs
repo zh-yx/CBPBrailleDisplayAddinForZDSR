@@ -19,12 +19,27 @@ namespace StarBraille
 
         private bool Connect()
         {
-            return _BrailleDisplay.Connect();
+            try
+            {
+                return _BrailleDisplay.Connect();
+            }
+            catch (Exception ex)
+            {
+                Logger.LogException(ex);
+            }
+            return false;
         }
 
         public void Disconnect()
         {
-            _BrailleDisplay.Disconnect();
+            try
+            {
+                _BrailleDisplay.Disconnect();
+            }
+            catch (Exception ex)
+            {
+                Logger.LogException(ex);
+            }
         }
 
         public int GetVersion()
@@ -34,13 +49,21 @@ namespace StarBraille
 
         public bool Initial(Action<int, int> setHandle, Action<string> actionHandler, Action<int> routingKeyHandler)
         {
+            Logger.SetLogFileName("StarBrailleForZdsr.log");
             _BrailleDisplay = new StarBrailleDisplay(setHandle, actionHandler, routingKeyHandler);
             return true;
         }
 
         public void WriteCells(byte[] cells)
         {
-            _BrailleDisplay.ShowBraille(cells);
+            try
+            {
+                _BrailleDisplay.ShowBraille(cells);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogException(ex);
+            }
         }
     }
 }
